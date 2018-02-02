@@ -1,0 +1,61 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 26
+    defaultConfig {
+        applicationId "android.template.com.defaultprojecttemplate"
+        minSdkVersion 19
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    buildTypes {
+        release {
+            getProps('./config/prod.properties').each { p ->
+                buildConfigField 'String', p.key, p.value
+            }
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
+        debug {
+            getProps('./config/dev.properties').each { p ->
+                buildConfigField 'String', p.key, p.value
+            }
+        }
+    }
+
+}
+
+// To load the properties file
+def getProps(path) {
+    Properties props = new Properties()
+    props.load(new FileInputStream(file(path)))
+    return props
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.1'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    // For parsing json object and genrating json object
+    implementation 'com.google.code.gson:gson:2.8.0'
+    // Retrofit is used for network operations
+    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
+    implementation 'com.squareup.retrofit2:adapter-rxjava:2.0.2'
+    // Okhttp3 used for httpclient.
+    implementation 'com.squareup.okhttp3:okhttp:3.8.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.8.0'
+
+    implementation 'com.scottyab:aescrypt:0.0.1'
+}
